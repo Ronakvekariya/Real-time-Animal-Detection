@@ -1,0 +1,23 @@
+[
+    {
+        "raspberry_pi_id": "RPI_12345",
+        "raspberry_pi_ip": "192.168.1.31",
+        "class_of_animal": "['Tiger']",
+        "time_stamp": "2024-12-10 14:36:47",
+        "location": "testing"
+    },
+    {
+        "raspberry_pi_id": "RPI_12345",
+        "raspberry_pi_ip": "192.168.1.31",
+        "class_of_animal": "['elephant']",
+        "time_stamp": "2024-12-10 14:37:32",
+        "location": "testing"
+    },
+    {
+        "raspberry_pi_id": "RPI_12345",
+        "raspberry_pi_ip": "192.168.1.31",
+        "class_of_animal": "['Tiger']",
+        "time_stamp": "2024-12-10 14:40:10",
+        "location": "testing"
+    }
+]
