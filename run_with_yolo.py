@@ -8,9 +8,12 @@ from threading import Thread
 import numpy as np
 from ultralytics import YOLO
 import matplotlib.pyplot as plt
-import json , socket , os
+import json, socket, os
+from dotenv import load_dotenv
 
-model  = YOLO("./best.pt")
+load_dotenv()
+
+model = YOLO(os.getenv("MODEL_PATH", "./best.pt"))
 
 class FPS:
 	def __init__(self):
@@ -98,7 +101,9 @@ def send_data(entry):
     try:
         client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Replace with the receiving Raspberry Pi's actual IP address
-        client_socket.connect((socket.gethostname(), 8080))
+        server_host = os.getenv("SERVER_HOST", socket.gethostname())
+        server_port = int(os.getenv("SERVER_PORT", "8080"))
+        client_socket.connect((server_host, server_port))
         json_data = json.dumps(entry)
         client_socket.send(json_data.encode('utf-8'))
         client_socket.close()
@@ -151,11 +156,11 @@ while True:
                 print(predictions)
                 # Prepare data to append
                 data = {
-                    "raspberry_pi_id": "RPI_12345",
-                    "raspberry_pi_ip": "192.168.1.31", 
+                    "raspberry_pi_id": os.getenv("RPI_ID", "local-test"),
+                    "raspberry_pi_ip": os.getenv("RPI_IP", ""), 
                     "class_of_animal": f"{predictions}",
                     "time_stamp": datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    "location": "testing"
+                    "location": os.getenv("LOCATION", "testing")
                 }
 
                 # Append data to in-memory list
@@ -176,7 +181,9 @@ while True:
     
             annoated_frame = results[0].plot()
             cv2.imshow("Live Capture (Threaded)",annoated_frame)
-            cv2.imwrite("/home/ronak/Downloads/detected_photoes/" +  datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ".jpg" , annoated_frame )
+            output_dir = os.getenv("OUTPUT_DIR", "./outputs")
+            os.makedirs(output_dir, exist_ok=True)
+            cv2.imwrite(os.path.join(output_dir, datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".jpg"), annoated_frame)
     # Update the FPS counter
     fps.update()
 
